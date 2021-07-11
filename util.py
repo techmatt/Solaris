@@ -73,6 +73,10 @@ def saveNPYImg(filename, img):
     img = (img * 255.0).astype(np.uint8)
     cv2.imwrite(filename, img)
 
+def saveNPYImgDouble(filename, img):
+    img = np.concatenate([img, img], axis=0)
+    saveNPYImg(filename, img)
+
 def linearMap(x, minValIn, maxValIn, minValOut, maxValOut):
     return ((x - minValIn) * (maxValOut - minValOut) / (maxValIn - minValIn) + minValOut)
 

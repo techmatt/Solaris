@@ -1,10 +1,13 @@
 
+import os
 from functools import cmp_to_key
 from PIL import Image, ImageFont, ImageDraw
+from fpdf import FPDF
 import numpy as np
 from math import pow
 
 import util
+import cv2
 
 #full image: (666,906)
 #half image: (666, 453)
@@ -65,7 +68,9 @@ def getCompareKey(s):
 class Opt:
     def __init__(self):
         self.fontTitle = ImageFont.truetype("fonts/CenturyGothicBold.ttf", 200)
-        self.fontDesc = ImageFont.truetype("fonts/futura.ttf", 100)
+        self.fontDesc = ImageFont.truetype("fonts/futura.ttf", 80)
+        self.bookTitle = ImageFont.truetype("fonts/FlareGothic.ttf", 200)
+        self.fontPage = ImageFont.truetype("fonts/CenturyGothicBold.ttf", 140)
         self.pageWidth = 2664
         self.pageHeight = 1812
         self.gemImgs = {}
@@ -125,20 +130,82 @@ class SpellList:
         result['desc'] = parts[8]
         return result
 
-def makeSpellImg(opt, spell, fullWidth, leftPad, rightPad):
+def makeSpellImg(opt, spell, fullWidth, height, leftPad, rightPad):
     allImgs = []
     for gem in ['w', 'r', 'y', 'g', 'b', 'v', 'gray']:
         for x in range(0, spell[gem]):
-            allImgs.append(opt.gemImgs[gem])
+            gemImg = opt.gemImgs[gem]
+            gemImg = cv2.resize(gemImg, dsize=(height, height), interpolation=cv2.INTER_LANCZOS4) #cv2.INTER_AREA
+            gemImg = np.clip(gemImg, 0.0, 1.0)
+            allImgs.append(gemImg)
     result = np.concatenate(allImgs, axis=1)
+    return makeSpellImgFinal(result, fullWidth, leftPad, rightPad)
+    
+def makeSpellImgBookTitle(opt, gem, gemShape, fullWidth, leftPad, rightPad):
+    gemImg = opt.gemImgs[gem]
+    gemImg = cv2.resize(gemImg, dsize=(gemShape, gemShape), interpolation=cv2.INTER_LANCZOS4) #cv2.INTER_AREA
+    gemImg = np.clip(gemImg, 0.0, 1.0)
+    return makeSpellImgFinal(gemImg, fullWidth, leftPad, rightPad)
+
+def makeSpellImgFinal(imgBase, fullWidth, leftPad, rightPad):
     centerWidth = fullWidth - leftPad - rightPad
-    centerPadL = (centerWidth - result.shape[1]) // 2
-    centerPadR = centerWidth - result.shape[1] - centerPadL
-    result = np.pad(result, ((0, 0), (centerPadL, centerPadR), (0, 0)), constant_values=1.0)
+    centerPadL = (centerWidth - imgBase.shape[1]) // 2
+    centerPadR = centerWidth - imgBase.shape[1] - centerPadL
+    result = np.pad(imgBase, ((0, 0), (centerPadL, centerPadR), (0, 0)), constant_values=1.0)
     result = np.pad(result, ((0, 0), (leftPad, rightPad), (0, 0)), constant_values=1.0)
     return result
 
-def makeSpellPage(opt, spell):
+def makeSpellbookTitle(opt, spellbookChar):
+    lookupDict = {'r': 'Red', 'y' : 'Yellow', 'g': 'Green',
+                  'b': 'Blue', 'v' : 'Violet', 'w': 'White'}
+    title = 'The ' + lookupDict[spellbookChar] + ' Grimoire'
+
+    result = np.ones([opt.pageHeight, opt.pageWidth, 3], dtype=np.float32)
+
+    gemStart = int(opt.pageHeight * 0.15)
+    gemHeight = int(opt.pageHeight * 0.45)
+
+    titleStart = int(opt.pageHeight * 0.65)
+    titleHeight = int(opt.pageHeight * 0.2)
+
+    leftPad = int(opt.pageWidth * 0.2)
+    rightPad = int(opt.pageWidth * 0.1)
+
+    gemImg = makeSpellImgBookTitle(opt, spellbookChar, gemHeight, opt.pageWidth, leftPad, rightPad)
+    titleImg = util.drawWrappedText(title, opt.bookTitle, opt.pageWidth, titleHeight, leftPad, rightPad)
+    
+    result[gemStart:gemStart + gemHeight] = gemImg[:]
+    result[titleStart:titleStart + titleHeight] = titleImg[:]
+    
+    return result
+
+def makeSpellbookTOC(opt, spellbook):
+    result = np.ones([opt.pageHeight, opt.pageWidth, 3], dtype=np.float32)
+
+    leftPad = int(opt.pageWidth * 0.2)
+    rightPad = int(opt.pageWidth * 0.1)
+    
+    tablePadding = 5
+
+    entryHeight = int(opt.gemImgSize[0] * 0.8)
+
+    for spellIdx in range(0, len(spellbook)):
+        spell = spellbook[spellIdx]
+        spellImg = makeSpellImg(opt, spell, opt.pageWidth, entryHeight, leftPad, rightPad)
+
+        tableStart = int(opt.pageHeight * 0.05 + spellIdx * (entryHeight + tablePadding))
+        tableHeight = entryHeight
+
+        result[tableStart:tableStart + tableHeight] = spellImg[:]
+
+        pageIdxWidth = int(0.1 * opt.pageWidth)
+        pageStart = int(0.7 * opt.pageWidth)
+        pageImg = util.drawWrappedText(str(spellIdx + 2), opt.fontPage, pageIdxWidth, entryHeight, 0, 0)
+        result[tableStart:tableStart + tableHeight,pageStart:pageStart + pageIdxWidth] = pageImg[:]
+    
+    return result
+
+def makeSpellPage(opt, spell, pageIdx):
     result = np.ones([opt.pageHeight, opt.pageWidth, 3], dtype=np.float32)
 
     titleStart = int(opt.pageHeight * 0.05)
@@ -153,9 +220,15 @@ def makeSpellPage(opt, spell):
     leftPad = int(opt.pageWidth * 0.2)
     rightPad = int(opt.pageWidth * 0.1)
 
-    spellImg = makeSpellImg(opt, spell, opt.pageWidth, leftPad, rightPad)
+    spellImg = makeSpellImg(opt, spell, opt.pageWidth, opt.gemImgSize[0], leftPad, rightPad)
     titleImg = util.drawWrappedText(spell['name'], opt.fontTitle, opt.pageWidth, titleHeight, leftPad, rightPad)
     descImg = util.drawWrappedText(spell['desc'], opt.fontDesc, opt.pageWidth, descHeight, leftPad, rightPad)
+    
+    pageIdxWidth = int(0.1 * opt.pageWidth)
+    pageIdxHeight = int(0.1 * opt.pageHeight)
+    pageIdxStartX = int(0.9 * opt.pageWidth)
+    pageIdxStartY = int(0.85 * opt.pageHeight)
+    pageImg = util.drawWrappedText(str(pageIdx), opt.fontPage, pageIdxWidth, pageIdxHeight, 0, 0)
     
     #util.printArrayStats(result, 'result')
     #util.printArrayStats(titleImg, 'titleImg')
@@ -163,15 +236,47 @@ def makeSpellPage(opt, spell):
     result[titleStart:titleStart + titleHeight] = titleImg[:]
     result[spellStart:spellStart + spellHeight] = spellImg[:]
     result[descStart:descStart + descHeight] = descImg[:]
+    result[pageIdxStartY:pageIdxStartY + pageIdxHeight,pageIdxStartX:pageIdxStartX + pageIdxWidth] = pageImg[:]
 
-    util.saveNPYImg('spell.png', spellImg)
-    util.saveNPYImg('result.png', result)
+    return result
+    #util.saveNPYImg('spell.png', spellImg)
+    #util.saveNPYImg('result.png', result)
+
+def makeSpellbookImages(opt, spellbookChar, spellbook):
+    baseDir = 'spellbooks/' + spellbookChar + '/'
+    os.makedirs(baseDir, exist_ok=True)
+
+    titleImg = makeSpellbookTitle(opt, spellbookChar)
+    TOCImg = makeSpellbookTOC(opt, spellbook)
+
+    util.saveNPYImgDouble(baseDir + '0.png', titleImg)
+    util.saveNPYImgDouble(baseDir + '1.png', TOCImg)
+
+    pageIdx = 2
+    for spellIdx in range(0, len(spellbook)):
+        spell = spellbook[spellIdx]
+        print('saving ' + spellbookChar + ' ' + str(pageIdx))
+        img = makeSpellPage(opt, spell, spellIdx+2)
+        util.saveNPYImgDouble(baseDir + str(pageIdx) + '.png', img)
+        pageIdx += 1
+
+    pdf = FPDF()
+    for idx in range(0, pageIdx):
+        pdf.add_page()
+        #a4 letter size in mm: 210 x 297 mm
+        pdf.image(baseDir + str(idx) + '.png', 0, 0, 210, 297)
+    pdf.output(baseDir + str(spellbookChar) + ".pdf", "F")
+
 
 def convertAll():
     opt = Opt()
     spellList = SpellList('spells.txt')
 
-    makeSpellPage(opt, spellList.spells[0])
+
+    for spellChar in spellList.spellbooks:
+        makeSpellbookImages(opt, spellChar, spellList.spellbooks[spellChar])
+
+    #makeSpellPage(opt, spellList.spells[0])
     
     #img = util.drawWrappedText('this is a really long string. this is a really long string. this is a really long string. this is a really long string. this is a really long string. this is a really long string. this is a really long string. this is a really long string.', fontTitle, 1024)
     #util.printArrayStats(img, 'img')
