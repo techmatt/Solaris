@@ -1,36 +1,47 @@
-Magical shield		1	1					Targets 1 character.  For the next 10 minutes, they can resist being knocked unconscious, or be knocked unconscious instead of being critically wounded.  Using this effect will expend the shield.
-Blinding Blast		1		1				Targets all characters within line of sight of the caster.  All affected characters are blinded for the next 10 minutes and cannot see.  This blast will be heard by everyone in game.
-Forcewall	1	1			1			Targets an area.  Using blue tape, create a straight line no longer than 15 feet or a 10 foot radius circle.  This barrier cannot be crossed, and prevents magic from being cast across it (you may not target characters on the other side of the barrier.)  This will protect you from hostile magic that is cast concurrently with this spell.
+Blink			1					You vanish for a brief moment, then reappear at the same location.  You can use this to dodge any concurrently cast effect.
+Stolen Voice		1	1					The leader cannot speak, meditate, or cast spells for the next 5 minutes.
+Magical Shield	1	1	1					Targets 1 character.  For the next 10 minutes, they can resist being knocked unconscious, or be knocked unconscious instead of being critically wounded.  Using this effect will expend the shield.  You may not cast this spell again for 30 minutes.
+Blinding Blast	3	1						The casters and all others characters within 2 ZOC have trouble seeing and hearing for the next 5 minutes and must move at a heel-to-toe pace.  This blast will be heard by everyone in game.
+Forcewall	1	1			1			Using blue tape, create a straight line no longer than 15 feet or a 10 foot diameter circle.  This barrier cannot be crossed, and prevents magic from being cast across it (you may not target characters on the other side of a barrier.)  This will protect you from hostile magic that is cast concurrently with this spell.
 Exhaustion		1				1		Targets 1 character.  They become knocked out.
 Fireball	1	2						Targets 2 characters.  They become knocked out.
 Soulflay		1					2	Targets 1 character.  They become critically wounded.
 Incinerate		3						Targets 1 character.  They become critically wounded.
+Catastrophe	1	2			1			All casters are knocked unconscious.
+Deafening Screech	1			1				All characters within 2 ZOC are deafened for 2 minutes and cannot cast spells or meditate.
 Ensnare	1		1	1				Targets 1 character.  For the next 5 minutes, their left foot is ensnared and cannot be moved.
-Dispel			1		1			Targets 1 magical effect that is being or has been cast by another player.  Can also affect any signs labeled "dispellable".  Dispel that effect.
-Banish	1		1			1		Targets 1 character.  They disappear and reappear in 1 minute at a reachable in-game location of your choosing.
-Clairvoyance	1		1			1	1	Targets 1 character.  Allows out-of-body perception.  The target's body is now "knocked unconscious" for the next 5 minutes.  During this time, the player may go "not here" and listen to and observe other characters.  They may return to their body early, but only if the player is within 1 ZOC of it.
-Unlock			1			1		Targets a locked door.  Allows you and anyone else to pass through for the next 30 seconds.  Does not dispel magical barriers.
-Past Sight	1		1				1	Targets an unconscious character or one who was unconscious within the past 10 minutes.  Get a glimpse of what harmed them (including the spell name and gemstones.)  This spell taps gemstones for 20 minutes.
-Teleport	1		2					Targets either the caster or one of the assistants of this spell.  They vanish and in 30 seconds appear at a location of your choice (you must decide on that location now.)  A character who teleports is not affected by concurrently cast magic.
-Spatial Rend			3					Targets 1 character.  They become critically wounded.
-Sense Life				1				Targets any number of characters in 1 ZOC.  Learn anything relevant about their current health (diseases, cause of recent trauma) or genetic relationships between them (consult a GM).  The caster will also be able to see invisible characters for 5 minutes.
-Analyze Essence	4			1	1			Targets 1 character.  Learn the current state of their gemstones.
-Charm				1		1		Targets 1-2 characters.  For the next five minutes, they will treat you as a close confidant.  They cannot lie to you during this time, but they also don’t have to say anything they wouldn’t to a close friend.  After the duration expires, they will remember the conversation and realize they have been charmed.  Cannot be used on someone who actively fears or despises you.
-Disabling Touch	2			1		1		Targets 1 character.  They become either blind, deaf, or cannot speak (your choice).
-Healing Touch	4			1				Targets 1 character.  A "knocked out" character recovers immediately.  A "critically wounded" character is now "knocked out" and will recover in 5 minutes.
-Reverse Death	4			2			2	Targets 1 character who died in the past 15 minutes.  Undoes the passage of time on their body and retuns them to being knocked out.  They will not remember remember the past 30 minutes of time, and possibly longer at the revived character's option.  This spell taps your gemstones for 30 minutes.
-Stench				2				Targets 1 character.  They are knocked unconscious.  All other characters within line of sight are overcome with a horrible stench.  For the next 5 minutes, they can only move at a heel-to-toe pace and cannot cast spells.
+Dispel			1		1			Targets 1 character.  You may either counter a spell cast by that character or a magical effect on that character.  You may alternatively remove an existing blue tape barrier from the game.  Does not affect Chaos Rifts.
+Clairvoyance	1		1			1		Targets 1 character.  Allows out-of-body perception.  The target's body is now "knocked unconscious" for the next 5 minutes.  During this time, the player may go "not here" and listen to and observe other characters.  They may return to their body early, but only if the player is within 1 ZOC of it.
+Unlock			1			1		Targets 1 character.  For the next 30 seconds they may freely open (or close) locked doors.  Does not dispel magical barriers or allow passage through them.
+Past Sight	1		1				1	Targets an unconscious character or one who was unconscious within the past 10 minutes.  Get a glimpse of what harmed them (including the spell name and gemstones.)  You cannot cast this spell again for 20 minutes.
+Banish	1		2				1	Targets 1 character.  They vanish and in 1 minute appear at a location of the leader's choice (you must decide on that location now.)  A character who teleports is not affected by concurrently cast magic.
+Teleport	1		2					Targets 1 character.  They vanish and in 1 minute appear at a location of their choice (they must decide on that location now.)  A character who teleports is not affected by concurrently cast magic.
+Spatial Rend			3					Targets 1 character.  They become critically wounded.  You can alternatively use this spell to allow passage through a chaos rift.
+Sense Life	2			1				Targets 2 characters within 1 ZOC. Learn anything relevant about their current health (diseases, cause of recent trauma) or genetic relationships between them. All casters will also be able to see invisible characters for 10 minutes.
+Analyze Essence	2			1	1			Targets 1 character.  Learn the current state of all their gemstones.
+Geas	2					2		All casters cannot lie for the next 5 minutes.
+Charm	2			1		1		Targets 1-2 characters. For the next five minutes, they will treat you as a close confidant and will have trouble lying to you. After the duration expires, they will remember the conversation and realize they have been charmed.  Cannot be used on someone who considers you a true enemy or who you have previously charmed.  This effect is cancelled if there is nearby conflict.
+Disabling Touch	1			1		1		Targets 1 character.  For the next 5 minutes, they must walk at a heel-to-toe pace and cannot cast spells or meditate.
+Healing Touch	3			1				Targets 1 character.  A "knocked out" character recovers immediately.  A "critically wounded" character is now "knocked out" and will recover in 2 minutes.
+Reverse Death				2			3	Targets 1 character who died in the past 15 minutes.  Undoes the passage of time on their body and returns them to being knocked out.  They will not remember the past 30 minutes of time.  No participant may cast this spell again for the remainder of the game.
+Stench				2				Targets 1 character.  They are knocked unconscious.  All other characters within line of sight are overcome with a horrible stench.  For the next 5 minutes, they can only move at a heel-to-toe pace and cannot cast spells or meditate.
 Devour				3				Targets 1 character.  They become critically wounded.
-Aura of Negation					1	1		Targets an area.  Create a 10 foot radius circle.  Magic cannot be cast within this circle.  Does not work on any spell that uses at least one white gemstone, and does not negate existing effects.
-Chaos Surge					1		2	Targets 2 or 3 characters.  They become knocked out.
-Detect magic	2				1			Targets an area where a magical effect was cast within the past 5 minutes.  Learn the gemstones used for that spell (you may consult other players or a GM.)
+Fireflies		1			1			The hair of all casters starts randomly changing colors for the next 10 minutes.  You cannot mediate or cast spells during this time.
+Aura of Negation					1	1		Create a 10 foot diameter circle.  Magic cannot be cast within this circle unless it uses at least one white gemstone.  Does not negate existing effects or counter simultaneously cast effects.
+Chaos Wave					1		2	Targets 2 or 3 characters.  They become knocked out.
+Detect Magic	2				1			Targets an area where a magical effect was cast within the past 10 minutes.  Learn the gemstones used for that spell and its effects (you may consult other players, a grimoire, or a GM.)
 Magical Surge					2			Targets 2 characters.  They become knocked out.
-Control Magic					3			Targets 1 spell being cast by another player.  Control the targets of that spell.
-Invisibility						1	1	Targets 1-2 characters.  They are invisible for the next 5 minutes.  Taking any action or casting a spell ends invisibility.
-Discern Truth						2		Targets 1 character.  Determine if they believe a question they have just answered is truthful or not.  This spell taps gemstones for 20 minutes.
-Mind Probe	3					3		Targets 1 character.  You and the target collapse on the ground and go out of game for 2 minutes.  During this time you may ask them questions and they must answer the questions truthfully.  Your bodies are both vulnerable to other characters during this time.  This spell taps your gemstones for 20 minutes.  After 2 minutes, you may remain in this state if all characters are willing.
-Chaos Bolt							1	Targets 1 character.  They become knocked out.
-Empower	1						1	Targets 1 character.  Transfer them 1 gemstone from one of the casters to the target (leader's choice, but the stone does not have to come from the leader.)
-Drain Power	1						2	Targets 1 character.  Transfer 1 of their colored gemstones to you.  This should be the gemstone the target is least familiar with (the target player should decide this.)  If they have no colored gemstones, transfer a gray gemstone instead.  This spell taps your gemstones for 20 minutes.
-Baleful Polymorph				1			1	Targets 1 character.  They turn into a harmless creature of your choosing for 5 minutes that cannot talk or cast magic.  Their clothes and items transform with them.
+Control Magic					3			Targets 1 spell being cast by another character.  After it is cast, you may read its description and choose new targets of that spell as if you were the leader.
+Invisibility						1	1	Targets 1 character.  They are invisible for the next 5 minutes.  Taking any action (including meditating) or casting a spell ends invisibility.  Characters who cannot see you cannot react to your spellcasting. You must wait 15 minutes before casting this spell again.
+Discern Truth						2		Targets 1 character.  Determine if they believe a question they have just answered is truthful or not.  You cannot cast this spell again for 30 minutes.
+Mind Probe	2					3		Targets 1 character.  You and the target collapse on the ground and go out of game for 3 minutes.  During this time you may ask them questions and they must answer the questions truthfully.  Your bodies are both vulnerable to other characters during this time. After 2 minutes, you may remain in this state if all characters are willing. You cannot cast this spell again for 30 minutes.
+Chaos Bolt							1	Targets 1 character.  They are knocked unconscious.
+Empower	1						1	Targets 1 character.  The leader chooses one of the casters of this spell as the donor, who must then transfer one of their white or colored gemstones to the target character.  The donor may choose which gemstone to transfer.
+Drain Power	1						2	Targets 1 character (either living or dead.)  Transfer 1 of their white or colored gemstones to you.  This should be the gemstone the target is least familiar with (the target player should decide this.)  If they have no colored gemstones, transfer a gray gemstone instead.  You cannot cast this spell again for 30 minutes.
+Baleful Polymorph	1			1			1	Targets 1 character.  They turn into a harmless creature of your choosing for 5 minutes that cannot talk or cast magic.  Their clothes and items transform with them and cannot be transferred during this time.
 Chaotic Surge	2						1	Targets 1 character.  A "knocked out" character recovers immediately.  A "critically wounded" character is now "knocked out" and will recover in 5 minutes.
+Poltergeist	1				1	1		For the next 10 minutes, all casters are possessed by a poltergeist that interrupts them every time they try to cast a spell or meditate.
+Self Polymorph	1			1	2			All casters are polymorphed into small, harmless, flightless creatures of their choice.  They cannot cast spells and are very difficult to understand.
+Love Potion		1		1			1	The leader become platonically enamored with the next non-caster they encounter and seek to help them in any way that seems reasonable to the character.  This lasts for 5 minutes, at the end of which they will realize they have been charmed by this spell.  This effect is cancelled if there is nearby conflict.
+Mindwipe						2	2	Can only be used after T+3 hours.  Targets 1 unconscious character.  Erases the past several days of their memory.  If they are critically wounded, you may additionally erase as much of their memory as desired and remove any corresponding gemstones gained during this time.  The target will return to consciousness shortly after casting the spell.  No participant may cast this spell again for the remainder of the game.
+Fatal Backlash							3	The leader becomes critically wounded.

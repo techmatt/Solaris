@@ -36,19 +36,19 @@ def rSort(a, b):
     return anySort(a, b, [7, 6, 5, 4, 3, 2, 1])
 
 def ySort(a, b):
-    return anySort(a, b, [7, 6, 5, 4, 3, 2, 1])
+    return anySort(a, b, [6, 7, 5, 4, 3, 2, 1])
 
 def gSort(a, b):
-    return anySort(a, b, [7, 6, 5, 4, 3, 2, 1])
+    return anySort(a, b, [5, 6, 7, 4, 3, 2, 1])
 
 def bSort(a, b):
-    return anySort(a, b, [7, 6, 5, 4, 3, 2, 1])
+    return anySort(a, b, [4, 6, 5, 7, 3, 2, 1])
 
 def vSort(a, b):
-    return anySort(a, b, [7, 6, 5, 4, 3, 2, 1])
+    return anySort(a, b, [3, 6, 5, 4, 7, 2, 1])
 
 def wSort(a, b):
-    return anySort(a, b, [7, 6, 5, 4, 3, 2, 1])
+    return anySort(a, b, [2, 6, 5, 4, 3, 7, 1])
 
 def getCompareKey(s):
     if s == 'r':
@@ -71,6 +71,7 @@ class Opt:
         self.fontDesc = ImageFont.truetype("fonts/futura.ttf", 80)
         self.bookTitle = ImageFont.truetype("fonts/FlareGothic.ttf", 200)
         self.fontPage = ImageFont.truetype("fonts/CenturyGothicBold.ttf", 140)
+        self.fontAnom = ImageFont.truetype("fonts/futura.ttf", 80)
         self.pageWidth = 2664
         self.pageHeight = 1812
         self.gemImgs = {}
@@ -108,6 +109,7 @@ class SpellList:
         #self.spells.append(self.makeSpell())
         
     def makeSpell(self, line):
+        line = line.replace('  ', ' ')
         parts = line.split('\t')
         if len(parts) != 9:
             print('unexpected line: ' + line)
@@ -127,16 +129,20 @@ class SpellList:
         result['b'] = readInt(parts[5])
         result['v'] = readInt(parts[6])
         result['w'] = readInt(parts[7])
-        result['desc'] = parts[8]
+        result['desc'] = parts[8].replace('  ', ' ')
         return result
+
+def resizeImgStd(img, newSize):
+    result = cv2.resize(img, dsize=(newSize[1], newSize[0]), interpolation=cv2.INTER_LANCZOS4) #cv2.INTER_AREA
+    result = np.clip(result, 0.0, 1.0)
+    return result
 
 def makeSpellImg(opt, spell, fullWidth, height, leftPad, rightPad):
     allImgs = []
     for gem in ['w', 'r', 'y', 'g', 'b', 'v', 'gray']:
         for x in range(0, spell[gem]):
             gemImg = opt.gemImgs[gem]
-            gemImg = cv2.resize(gemImg, dsize=(height, height), interpolation=cv2.INTER_LANCZOS4) #cv2.INTER_AREA
-            gemImg = np.clip(gemImg, 0.0, 1.0)
+            gemImg = resizeImgStd(gemImg, [height, height])
             allImgs.append(gemImg)
     result = np.concatenate(allImgs, axis=1)
     return makeSpellImgFinal(result, fullWidth, leftPad, rightPad)
@@ -148,6 +154,9 @@ def makeSpellImgBookTitle(opt, gem, gemShape, fullWidth, leftPad, rightPad):
     return makeSpellImgFinal(gemImg, fullWidth, leftPad, rightPad)
 
 def makeSpellImgFinal(imgBase, fullWidth, leftPad, rightPad):
+    if imgBase.shape[1] > fullWidth:
+        imgBase = resizeImgStd(imgBase, [imgBase.shape[0], fullWidth])
+
     centerWidth = fullWidth - leftPad - rightPad
     centerPadL = (centerWidth - imgBase.shape[1]) // 2
     centerPadR = centerWidth - imgBase.shape[1] - centerPadL
@@ -182,28 +191,55 @@ def makeSpellbookTitle(opt, spellbookChar):
 def makeSpellbookTOC(opt, spellbook):
     result = np.ones([opt.pageHeight, opt.pageWidth, 3], dtype=np.float32)
 
-    leftPad = int(opt.pageWidth * 0.2)
-    rightPad = int(opt.pageWidth * 0.1)
+    #leftPad = int(opt.pageWidth * 0.2)
+    #rightPad = int(opt.pageWidth * 0.1)
     
     tablePadding = 5
 
+    columnWidth = int(opt.pageWidth * 0.45)
     entryHeight = int(opt.gemImgSize[0] * 0.8)
 
-    for spellIdx in range(0, len(spellbook)):
-        spell = spellbook[spellIdx]
-        spellImg = makeSpellImg(opt, spell, opt.pageWidth, entryHeight, leftPad, rightPad)
+    columnStartsX = [int(opt.pageWidth * 0.1), int(opt.pageWidth * 0.55)]
 
-        tableStart = int(opt.pageHeight * 0.05 + spellIdx * (entryHeight + tablePadding))
-        tableHeight = entryHeight
+    spellIdx = 0
+    for columnIdx in range(0, 2):
+        for rowIdx in range(0, 10):
+            if spellIdx >= len(spellbook):
+                continue
 
-        result[tableStart:tableStart + tableHeight] = spellImg[:]
+            spell = spellbook[spellIdx]
+            spellImg = makeSpellImg(opt, spell, columnWidth, entryHeight, 0, 0)
 
-        pageIdxWidth = int(0.1 * opt.pageWidth)
-        pageStart = int(0.7 * opt.pageWidth)
-        pageImg = util.drawWrappedText(str(spellIdx + 2), opt.fontPage, pageIdxWidth, entryHeight, 0, 0)
-        result[tableStart:tableStart + tableHeight,pageStart:pageStart + pageIdxWidth] = pageImg[:]
+            entryStartY = int(opt.pageHeight * 0.05 + rowIdx * (entryHeight + tablePadding))
+            columnStartX = columnStartsX[columnIdx]
+            
+            result[entryStartY:entryStartY + entryHeight, columnStartX:columnStartX + columnWidth] = spellImg[:]
+
+            pageIdxWidth = int(0.1 * opt.pageWidth)
+            pageStartX = columnStartX + int(0.35 * opt.pageWidth)
+            pageImg = util.drawWrappedText(str(spellIdx + 2), opt.fontPage, pageIdxWidth, entryHeight, 0, 0)
+            result[entryStartY:entryStartY + entryHeight,pageStartX:pageStartX + pageIdxWidth] = \
+                alphaMask(pageImg[:], result[entryStartY:entryStartY + entryHeight,pageStartX:pageStartX + pageIdxWidth])
+
+            spellIdx += 1
+
+    result[:, columnStartsX[1] - 10:columnStartsX[1]] = 0.0
+
+    anomX = int(0.57 * opt.pageWidth)
+    anomY = int(0.4 * opt.pageHeight)
+    anomWidth  = int(0.4 * opt.pageWidth)
+    anomHeight = int(0.6 * opt.pageHeight)
+    anomalyText = "If you try to cast a spell not on this list, you instead trigger an anomaly. " \
+                  "For the next minute, all casters must walk heel-to-toe and cannot meditate or cast spells."
+    anomalyImg = util.drawWrappedText(anomalyText, opt.fontAnom, anomWidth, anomHeight, 0, 0)
+    result[anomY:anomY + anomHeight,anomX:anomX + anomWidth] = \
+                alphaMask(anomalyImg[:], result[anomY:anomY + anomHeight,anomX:anomX + anomWidth])
     
     return result
+
+def alphaMask(imgOver, imgUnder):
+    imgAlpha = (imgOver[:,:,0:1] + imgOver[:,:,1:2] + imgOver[:,:,2:3]) / 3.0
+    return imgUnder * imgAlpha + imgOver * (1.0 - imgAlpha)
 
 def makeSpellPage(opt, spell, pageIdx):
     result = np.ones([opt.pageHeight, opt.pageWidth, 3], dtype=np.float32)
@@ -236,7 +272,8 @@ def makeSpellPage(opt, spell, pageIdx):
     result[titleStart:titleStart + titleHeight] = titleImg[:]
     result[spellStart:spellStart + spellHeight] = spellImg[:]
     result[descStart:descStart + descHeight] = descImg[:]
-    result[pageIdxStartY:pageIdxStartY + pageIdxHeight,pageIdxStartX:pageIdxStartX + pageIdxWidth] = pageImg[:]
+    result[pageIdxStartY:pageIdxStartY + pageIdxHeight,pageIdxStartX:pageIdxStartX + pageIdxWidth] = \
+        alphaMask(pageImg[:], result[pageIdxStartY:pageIdxStartY + pageIdxHeight,pageIdxStartX:pageIdxStartX + pageIdxWidth])
 
     return result
     #util.saveNPYImg('spell.png', spellImg)
@@ -265,7 +302,8 @@ def makeSpellbookImages(opt, spellbookChar, spellbook):
         pdf.add_page()
         #a4 letter size in mm: 210 x 297 mm
         pdf.image(baseDir + str(idx) + '.png', 0, 0, 210, 297)
-    pdf.output(baseDir + str(spellbookChar) + ".pdf", "F")
+    #pdf.output(baseDir + str(spellbookChar) + ".pdf", "F")
+    pdf.output('spellbooks/' + str(spellbookChar) + ".pdf", "F")
 
 
 def convertAll():
