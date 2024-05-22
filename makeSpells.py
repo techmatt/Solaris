@@ -13,6 +13,9 @@ import cv2
 #half image: (666, 453)
 #half image: (2664, 1812)
 
+lookupDict = {'r': 'Red', 'y' : 'Yellow', 'g': 'Green',
+              'b': 'Blue', 'v' : 'Violet', 'w': 'White'}
+    
 def scoreSpell(a, weights):
     return a['r'] * pow(10.0, weights[0]) + \
            a['y'] * pow(10.0, weights[1]) + \
@@ -165,8 +168,6 @@ def makeSpellImgFinal(imgBase, fullWidth, leftPad, rightPad):
     return result
 
 def makeSpellbookTitle(opt, spellbookChar):
-    lookupDict = {'r': 'Red', 'y' : 'Yellow', 'g': 'Green',
-                  'b': 'Blue', 'v' : 'Violet', 'w': 'White'}
     title = 'The ' + lookupDict[spellbookChar] + ' Grimoire'
 
     result = np.ones([opt.pageHeight, opt.pageWidth, 3], dtype=np.float32)
@@ -226,9 +227,9 @@ def makeSpellbookTOC(opt, spellbook):
     result[:, columnStartsX[1] - 10:columnStartsX[1]] = 0.0
 
     anomX = int(0.57 * opt.pageWidth)
-    anomY = int(0.4 * opt.pageHeight)
+    anomY = int(0.5 * opt.pageHeight)
     anomWidth  = int(0.4 * opt.pageWidth)
-    anomHeight = int(0.6 * opt.pageHeight)
+    anomHeight = int(0.5 * opt.pageHeight)
     anomalyText = "If you try to cast a spell not on this list, you instead trigger an anomaly. " \
                   "For the next minute, all casters must walk heel-to-toe and cannot meditate or cast spells."
     anomalyImg = util.drawWrappedText(anomalyText, opt.fontAnom, anomWidth, anomHeight, 0, 0)
@@ -303,7 +304,8 @@ def makeSpellbookImages(opt, spellbookChar, spellbook):
         #a4 letter size in mm: 210 x 297 mm
         pdf.image(baseDir + str(idx) + '.png', 0, 0, 210, 297)
     #pdf.output(baseDir + str(spellbookChar) + ".pdf", "F")
-    pdf.output('spellbooks/' + str(spellbookChar) + ".pdf", "F")
+    title = 'The ' + lookupDict[spellbookChar] + ' Grimoire'
+    pdf.output('spellbooks/' + title + ".pdf", "F")
 
 
 def convertAll():
